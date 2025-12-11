@@ -12,11 +12,18 @@
 	]);
 	let filter = $state('');
 	let computeCount = $state(0);
+	let computeCountRaw = 0; // non-reactive counter to avoid creating a feedback loop
 
 	// $derived automatically tracks dependencies
-	const filteredItems = $derived.by(() => {
-		computeCount++;
-		return items.filter((item) => item.name.toLowerCase().includes(filter.toLowerCase()));
+	const filteredItems = $derived.by(() =>
+		items.filter((item) => item.name.toLowerCase().includes(filter.toLowerCase()))
+	);
+
+	// Track how many times the derived value recalculates
+	$effect(() => {
+		filteredItems;
+		computeCountRaw += 1;
+		computeCount = computeCountRaw;
 	});
 
 	const totalItems = $derived(items.length);

@@ -100,7 +100,7 @@
 		<h2>Interactive Demo: Props in Action</h2>
 		<div class="demo-box">
 			<h3>Greeting Component</h3>
-			<GreetingDemo />
+			{@render GreetingDemo()}
 		</div>
 	</div>
 
