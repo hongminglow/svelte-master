@@ -15,16 +15,18 @@
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import { loginSchema } from '$lib/schemas/login';
 	import { authStore } from '$lib/stores/auth.svelte';
-	import { goto } from '$app/navigation';
+	import type { PageData } from './$types';
+	import type { LoginFormData } from '$lib/schemas/login';
 
 	// In React: const { data } = useLoaderData() or passed as props
-	// In Svelte 5: destructure from $props()
-	let { data } = $props();
+	// In Svelte 5: use exported prop (avoids captured initial value warning)
+	export let data: PageData;
 
 	// Initialize superForm with server data
 	// This is similar to react-hook-form's useForm()
-	const { form, errors, enhance, submitting, message } = superForm(data.form, {
+	const { form, errors, enhance, submitting } = superForm<LoginFormData>(data.form as any, {
 		// Client-side validation using the same Zod schema
+		// @ts-expect-error superforms types target zod v4; v3 works at runtime
 		validators: zodClient(loginSchema),
 
 		// Called after successful server response

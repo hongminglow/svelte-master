@@ -16,7 +16,7 @@
 
 import type { Actions, PageServerLoad } from './$types';
 import { fail, redirect } from '@sveltejs/kit';
-import { superValidate } from 'sveltekit-superforms';
+import { superValidate } from 'sveltekit-superforms/server';
 import { zod } from 'sveltekit-superforms/adapters';
 import { loginSchema } from '$lib/schemas/login';
 
@@ -25,6 +25,10 @@ const DEMO_USER = {
 	email: 'demo@example.com',
 	password: 'password123'
 };
+
+// Adapter for superforms (type cast bridges zod v3 typing to superforms expectations)
+// @ts-expect-error Superforms typings target zod v4, adapter works with v3 at runtime
+const loginValidator = zod(loginSchema);
 
 /**
  * Load function - runs on server before page renders
@@ -41,10 +45,11 @@ const DEMO_USER = {
  */
 export const load: PageServerLoad = async () => {
 	// Initialize form with schema (sets up validation & default values)
-	const form = await superValidate(zod(loginSchema));
+	const form = await superValidate(loginValidator);
 
 	return {
 		form,
+		error: null,
 		// Additional data can be passed here
 		demoCredentials: DEMO_USER.email
 	};
@@ -64,7 +69,7 @@ export const actions: Actions = {
 	// Named actions would be: login: async ({ request }) => { ... }
 	default: async ({ request, cookies }) => {
 		// Validate form data against schema
-		const form = await superValidate(request, zod(loginSchema));
+		const form = await superValidate(request, loginValidator);
 
 		// If validation fails, return errors
 		// Superforms automatically displays these in the form
@@ -103,6 +108,6 @@ export const actions: Actions = {
 
 		// Redirect to dashboard on success
 		// In React, you'd use navigate() or router.push()
-		redirect(303, '/dashboard');
+		throw redirect(303, '/dashboard');
 	}
 };
