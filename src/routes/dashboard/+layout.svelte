@@ -44,7 +44,12 @@
 		{ href: '/dashboard/props', label: 'Props ($props)', icon: '📦' },
 		{ href: '/dashboard/components', label: 'Components', icon: '🧩' },
 		{ href: '/dashboard/data-fetching', label: 'Data Fetching', icon: '🔄' },
-		{ href: '/dashboard/routing', label: 'Routing', icon: '🛣️' }
+		{ href: '/dashboard/routing', label: 'Routing', icon: '🛣️' },
+		{ href: '/dashboard/async-ui', label: 'Async UI (await)', icon: '⏳' },
+		{ href: '/dashboard/key-blocks', label: 'Key Blocks ({#key})', icon: '🔑' },
+		{ href: '/dashboard/snippets', label: 'Snippets ({#snippet})', icon: '✂️' },
+		{ href: '/dashboard/stores', label: 'Global State (stores)', icon: '🌐' },
+		{ href: '/dashboard/debugging', label: 'Debugging ($inspect)', icon: '🐞' }
 	];
 
 	// Check if current path matches nav item (for active state)
