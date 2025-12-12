@@ -37,7 +37,8 @@
 	<div class="intro">
 		<p class="lead">
 			Svelte can render async work with <code>{'{#await ...}'} </code> blocks, and (with
-			<code>experimental.async</code>) even inline <code>await</code> expressions. When an <code>await</code>
+			<code>experimental.async</code>) even inline <code>await</code> expressions. When an
+			<code>await</code>
 			expression depends on state, Svelte synchronizes updates to avoid inconsistent UI — and
 			<code>$state.eager</code> lets you opt out for immediate feedback.
 		</p>

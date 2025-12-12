@@ -13,9 +13,9 @@
 <div class="section">
 	<div class="intro">
 		<p class="lead">
-			In React you typically <code>console.log</code> inside renders/effects or use the React DevTools.
-			In Svelte 5 you can use <code>$inspect</code> and <code>$inspect.trace</code> to log reactive values
-			as they change.
+			In React you typically <code>console.log</code> inside renders/effects or use the React
+			DevTools. In Svelte 5 you can use <code>$inspect</code> and <code>$inspect.trace</code> to log reactive
+			values as they change.
 		</p>
 	</div>
 
@@ -48,7 +48,9 @@
 			<h4>Notes</h4>
 			<ul>
 				<li><code>$inspect(...)</code> runs only in development builds.</li>
-				<li>Don’t mutate <code>$state</code> inside <code>$inspect</code> callbacks (it can cause warnings).</li>
+				<li>
+					Don’t mutate <code>$state</code> inside <code>$inspect</code> callbacks (it can cause warnings).
+				</li>
 				<li><code>$inspect.trace(...)</code> helps you track why reactive code re-ran.</li>
 			</ul>
 		</div>
