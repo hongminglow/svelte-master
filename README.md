@@ -28,9 +28,11 @@ pnpm run preview
 src/
 ├── lib/
 │   ├── stores/           # Global state management (Svelte's alternative to Zustand/Redux)
-│   │   └── auth.svelte.ts
+│   │   ├── auth.svelte.ts
+│   │   └── global-counter.svelte.ts
 │   ├── components/       # Reusable UI components
-│   │   └── CodeComparison.svelte
+│   │   ├── CodeComparison.svelte
+│   │   └── KeyedInput.svelte
 │   └── schemas/          # Zod validation schemas
 │       └── login.ts
 ├── routes/
@@ -45,8 +47,15 @@ src/
 │       ├── props/
 │       ├── components/
 │       ├── data-fetching/
-│       └── routing/
+│       ├── routing/
+│       ├── async-ui/
+│       ├── key-blocks/
+│       ├── snippets/
+│       ├── stores/
+│       └── debugging/
 ```
+
+Note: this project enables Svelte's `compilerOptions.experimental.async` (in `svelte.config.js`) to demo `await` expressions and `$state.eager`.
 
 ---
 

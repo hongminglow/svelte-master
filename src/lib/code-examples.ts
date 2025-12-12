@@ -999,3 +999,243 @@ updateState(draft => {
 			`script>`
 	}
 };
+
+export const debuggingExamples = {
+	inspect: {
+		react: `import { useEffect, useMemo, useState } from 'react';
+
+export function DebugDemo() {
+  const [name, setName] = useState('Ada');
+  const [clicks, setClicks] = useState(0);
+
+  const doubled = useMemo(() => clicks * 2, [clicks]);
+
+  useEffect(() => {
+    console.log({ name, clicks, doubled });
+  }, [name, clicks, doubled]);
+
+  return (
+    <div>
+      <input value={name} onChange={(e) => setName(e.target.value)} />
+      <button onClick={() => setClicks((c) => c + 1)}>+</button>
+    </div>
+  );
+}`,
+		svelte:
+			`<` +
+			`script>
+  let name = $state('Ada');
+  let clicks = $state(0);
+  let doubled = $derived(clicks * 2);
+
+  // Dev-only reactive logging
+  $inspect(name, clicks, doubled);
+
+  $effect(() => {
+    $inspect.trace(name);
+  });
+</` +
+			`script>
+
+<input bind:value={name}>
+<button onclick={() => clicks++}>+</button>
+<p>{clicks} (doubled: {doubled})</p>`
+	}
+};
+
+export const asyncUiExamples = {
+	eager: {
+		react: `import { useMemo, useState } from 'react';
+
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+async function resolvePath(p) {
+  await sleep(800);
+  return p;
+}
+
+export function AsyncNavDemo() {
+  const [pathname, setPathname] = useState('/');
+
+  // React doesn't coordinate updates around async rendering
+  // so you'll typically show explicit loading state.
+  const pendingPath = useMemo(async () => resolvePath(pathname), [pathname]);
+
+  return (
+    <nav>
+      <button onClick={() => setPathname('/')}>/</button>
+      <button onClick={() => setPathname('/about')}>/about</button>
+      <p>Selected: {pathname}</p>
+      <p>Resolved: {/* render promise with your own state/suspense */}</p>
+    </nav>
+  );
+}`,
+		svelte:
+			`<` +
+			`script>
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+  let pathname = $state('/');
+
+  async function resolvePath(p) {
+    await sleep(800);
+    return p;
+  }
+</` +
+			`script>
+
+<nav>
+  <button onclick={() => pathname = '/'}>/</button>
+  <button onclick={() => pathname = '/about'}>/about</button>
+
+  <!-- Updates are synchronized because pathname is used by an await expression -->
+  <p>Selected (coordinated): {pathname}</p>
+
+  <!-- Opt out for immediate feedback -->
+  <p>Selected (eager): {$state.eager(pathname)}</p>
+
+  <p>Resolved (await): {await resolvePath(pathname)}</p>
+</nav>`
+	},
+	awaitBlock: {
+		react: `import { useEffect, useState } from 'react';
+
+function fetchGreeting() {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      Math.random() < 0.25 ? reject(new Error('Random failure')) : resolve('Hello!');
+    }, 900);
+  });
+}
+
+export function AwaitBlockDemo() {
+  const [state, setState] = useState({ status: 'idle', data: null, error: null });
+
+  async function start() {
+    setState({ status: 'loading', data: null, error: null });
+    try {
+      const data = await fetchGreeting();
+      setState({ status: 'success', data, error: null });
+    } catch (e) {
+      setState({ status: 'error', data: null, error: e });
+    }
+  }
+
+  return (
+    <div>
+      <button onClick={start}>Start request</button>
+      {state.status === 'loading' && <p>Loading…</p>}
+      {state.status === 'success' && <p>{state.data}</p>}
+      {state.status === 'error' && <p>Error: {String(state.error)}</p>}
+    </div>
+  );
+}`,
+		svelte:
+			`<` +
+			`script>
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+  let request = $state(null);
+
+  async function fetchGreeting() {
+    await sleep(900);
+    if (Math.random() < 0.25) throw new Error('Random failure');
+    return 'Hello!';
+  }
+</` +
+			`script>
+
+<button onclick={() => request = fetchGreeting()}>Start request</button>
+
+{#if request}
+  {#await request}
+    <p>Loading…</p>
+  {:then message}
+    <p>{message}</p>
+  {:catch err}
+    <p>Error: {err.message}</p>
+  {/await}
+{/if}`
+	}
+};
+
+export const keyBlockExamples = {
+	remount: {
+		react: `function KeyedInput() {
+  const [value, setValue] = useState('');
+  return <input value={value} onChange={(e) => setValue(e.target.value)} />;
+}
+
+export function Demo() {
+  const [key, setKey] = useState(0);
+
+  return (
+    <>
+      <button onClick={() => setKey((k) => k + 1)}>Remount</button>
+      <KeyedInput key={key} />
+    </>
+  );
+}`,
+		svelte:
+			`<` +
+			`script>
+  import KeyedInput from '$lib/components/KeyedInput.svelte';
+  let key = $state(0);
+</` +
+			`script>
+
+<button onclick={() => key++}>Remount</button>
+
+{#key key}
+  <KeyedInput />
+{/key}`
+	}
+};
+
+export const snippetsExamples = {
+	basic: {
+		react: `// React: render helpers are just functions
+function Greeting({ name }) {
+  return <p>Hello, {name}!</p>;
+}
+
+export function Demo({ who }) {
+  return <Greeting name={who} />;
+}`,
+		svelte:
+			`{#snippet Greeting(name)}
+  <p>Hello, {name}!</p>
+{/snippet}
+
+{@render Greeting('Ada')}`
+	}
+};
+
+export const storesExamples = {
+	globalState: {
+		react: `// React: Context is a common default for shared state
+const CounterContext = createContext(null);
+
+function CounterProvider({ children }) {
+  const [count, setCount] = useState(0);
+  return (
+    <CounterContext.Provider value={{ count, setCount }}>
+      {children}
+    </CounterContext.Provider>
+  );
+}
+
+function useCounter() {
+  return useContext(CounterContext);
+}`,
+		svelte:
+			`// src/lib/stores/global-counter.svelte.ts
+export const globalCounter = $state({ count: 0 });
+
+export function increment() {
+  globalCounter.count += 1;
+}
+
+// Anywhere in your app:
+// import { globalCounter, increment } from '$lib/stores/global-counter.svelte';`
+	}
+};
