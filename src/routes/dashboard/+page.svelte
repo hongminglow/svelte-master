@@ -7,6 +7,9 @@
 <script lang="ts">
 	import CodeComparison from '$lib/components/CodeComparison.svelte';
 	import { authStore } from '$lib/stores/auth.svelte';
+	// Quick comparison examples for the hero section - imported from code-examples.ts to avoid parsing issues
+	import { dashboardOverviewExamples } from '$lib/code-examples';
+	const quickComparison = dashboardOverviewExamples;
 
 	// Learning sections data
 	const sections = [
@@ -17,6 +20,14 @@
 			description: 'Learn $state rune vs useState hook',
 			react: 'useState, useReducer',
 			svelte: '$state, $state.raw'
+		},
+		{
+			title: 'Stores',
+			href: '/dashboard/stores',
+			icon: '📦',
+			description: 'Learn writable stores vs Zustand',
+			react: 'Zustand, Context',
+			svelte: 'writable, $state modules'
 		},
 		{
 			title: 'Side Effects',
@@ -51,12 +62,44 @@
 			svelte: 'Templates, class, slots'
 		},
 		{
+			title: 'Snippets',
+			href: '/dashboard/snippets',
+			icon: '🧩',
+			description: 'Learn {#snippet} + {@render} patterns',
+			react: 'render helpers',
+			svelte: '{#snippet}, {@render}'
+		},
+		{
+			title: 'Key Blocks',
+			href: '/dashboard/key-blocks',
+			icon: '🧩',
+			description: 'Learn remounting patterns',
+			react: 'key prop',
+			svelte: '{#key ...}'
+		},
+		{
 			title: 'Data Fetching',
 			href: '/dashboard/data-fetching',
 			icon: '🔄',
 			description: 'Learn TanStack Query + load functions',
 			react: 'useQuery, fetch in useEffect',
 			svelte: 'load functions, createQuery'
+		},
+		{
+			title: 'Async UI',
+			href: '/dashboard/async-ui',
+			icon: '🔄',
+			description: 'Learn loading/error UI patterns',
+			react: 'Suspense, loading states',
+			svelte: '{#await}, load'
+		},
+		{
+			title: 'Debugging',
+			href: '/dashboard/debugging',
+			icon: '⚡',
+			description: 'Learn debugging patterns',
+			react: 'DevTools, logs',
+			svelte: '$inspect, logs'
 		},
 		{
 			title: 'Routing',
@@ -67,10 +110,6 @@
 			svelte: 'File-based routes'
 		}
 	];
-
-	// Quick comparison examples for the hero section - imported from code-examples.ts to avoid parsing issues
-	import { dashboardOverviewExamples } from '$lib/code-examples';
-	const quickComparison = dashboardOverviewExamples;
 </script>
 
 <div class="overview">
@@ -85,7 +124,7 @@
 		</div>
 		<div class="quick-stats">
 			<div class="stat">
-				<span class="stat-value">7</span>
+				<span class="stat-value">{sections.length}</span>
 				<span class="stat-label">Sections</span>
 			</div>
 			<div class="stat">

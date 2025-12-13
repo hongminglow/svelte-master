@@ -1,40 +1,45 @@
 <script lang="ts">
 	import CodeComparison from '$lib/components/CodeComparison.svelte';
 	import { storesExamples } from '$lib/code-examples';
-	import { decrement, globalCounter, increment, reset } from '$lib/stores/global-counter.svelte';
+	import {
+		decrementWritable,
+		incrementWritable,
+		resetWritable,
+		writableCounter
+	} from '$lib/stores/writable-counter';
 </script>
 
 <div class="section">
 	<div class="intro">
 		<p class="lead">
-			For shared state, Svelte 5 often doesn’t need a store library at all — you can put a
-			<code>$state</code> object in a <code>.svelte.ts</code> module and import it anywhere.
-			Traditional
-			<code>svelte/store</code> stores still exist and are useful for streams and interoperability.
+			Svelte has a built-in store API via <code>svelte/store</code>. The most common store is
+			<code>writable</code>, which you can update from anywhere and subscribe to in components. In
+			Svelte 5 you can also share module <code>$state</code>, but <code>writable</code> is still useful
+			for streams and interop.
 		</p>
 	</div>
 
 	<div class="example">
-		<h2>Live Demo: Shared module state</h2>
+		<h2>Live Demo: Writable store</h2>
 		<div class="demo-box">
 			<div class="grid">
 				<div class="panel">
 					<h3>Panel A</h3>
-					<p class="count">{globalCounter.count}</p>
+					<p class="count">{$writableCounter.count}</p>
 					<div class="row">
-						<button onclick={decrement}>-</button>
-						<button onclick={increment}>+</button>
-						<button onclick={reset}>Reset</button>
+						<button onclick={decrementWritable}>-</button>
+						<button onclick={incrementWritable}>+</button>
+						<button onclick={resetWritable}>Reset</button>
 					</div>
 				</div>
 
 				<div class="panel">
 					<h3>Panel B</h3>
-					<p class="count">{globalCounter.count}</p>
+					<p class="count">{$writableCounter.count}</p>
 					<div class="row">
-						<button onclick={decrement}>-</button>
-						<button onclick={increment}>+</button>
-						<button onclick={reset}>Reset</button>
+						<button onclick={decrementWritable}>-</button>
+						<button onclick={incrementWritable}>+</button>
+						<button onclick={resetWritable}>Reset</button>
 					</div>
 				</div>
 			</div>
@@ -50,10 +55,10 @@
 			<h4>Rule of thumb</h4>
 			<ul>
 				<li>
-					Use module <code>$state</code> for shared app state you mutate synchronously.
+					Use <code>writable</code> for shared state that many components subscribe to.
 				</li>
 				<li>
-					Use <code>svelte/store</code> (or TanStack Query, etc.) for async streams and external interop.
+					Use module <code>$state</code> for lightweight shared state you mutate synchronously.
 				</li>
 			</ul>
 		</div>

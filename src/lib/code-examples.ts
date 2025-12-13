@@ -7,11 +7,11 @@ import { useState, useEffect } from 'react';
 
 function Counter() {
   const [count, setCount] = useState(0);
-  
+
   useEffect(() => {
     document.title = \`Count: \${count}\`;
   }, [count]);
-  
+
   return (
     <button onClick={() => setCount(c => c + 1)}>
       Count: {count}
@@ -23,7 +23,7 @@ function Counter() {
 <` +
 		`script>
   let count = $state(0);
-  
+
   $effect(() => {
     document.title = \`Count: \${count}\`;
   });
@@ -41,13 +41,13 @@ export const effectsExamples = {
 
 function DocumentTitle() {
   const [count, setCount] = useState(0);
-  
+
   // useEffect runs after render
   // Dependency array controls when it runs
   useEffect(() => {
     document.title = \`Count: \${count}\`;
   }, [count]); // Only re-run when count changes
-  
+
   return (
     <button onClick={() => setCount(c => c + 1)}>
       Count: {count}
@@ -58,7 +58,7 @@ function DocumentTitle() {
 			`<` +
 			`script>
   let count = $state(0);
-  
+
   // $effect automatically tracks dependencies
   // No dependency array needed!
   $effect(() => {
@@ -76,31 +76,31 @@ function DocumentTitle() {
 
 function Timer() {
   const [seconds, setSeconds] = useState(0);
-  
+
   useEffect(() => {
     // Setup
     const interval = setInterval(() => {
       setSeconds(s => s + 1);
     }, 1000);
-    
+
     // Cleanup function runs before effect re-runs
     // and on unmount
     return () => clearInterval(interval);
   }, []); // Empty array = run once
-  
+
   return <p>Seconds: {seconds}</p>;
 }`,
 		svelte:
 			`<` +
 			`script>
   let seconds = $state(0);
-  
+
   $effect(() => {
     // Setup
     const interval = setInterval(() => {
       seconds++;
     }, 1000);
-    
+
     // Return cleanup function
     // Same pattern as React!
     return () => clearInterval(interval);
@@ -115,20 +115,20 @@ function Timer() {
 
 function AutoScroll() {
   const ref = useRef(null);
-  
+
   // useLayoutEffect runs synchronously
   // before browser paint
   useLayoutEffect(() => {
     ref.current?.scrollTo(0, 0);
   });
-  
+
   return <div ref={ref}>...</div>;
 }`,
 		svelte:
 			`<` +
 			`script>
   let container;
-  
+
   // $effect.pre runs before DOM updates
   // Equivalent to useLayoutEffect
   $effect.pre(() => {
@@ -150,11 +150,11 @@ function ExpensiveList({ items, filter }) {
   // Recalculates when dependencies change
   const filtered = useMemo(() => {
     console.log('Filtering...');
-    return items.filter(item => 
+    return items.filter(item =>
       item.name.includes(filter)
     );
   }, [items, filter]);
-  
+
   return (
     <ul>
       {filtered.map(item => (
@@ -167,15 +167,15 @@ function ExpensiveList({ items, filter }) {
 			`<` +
 			`script>
   let { items, filter } = $props();
-  
+
   // $derived automatically tracks dependencies
   // Much cleaner - no dependency array!
   const filtered = $derived(
-    items.filter(item => 
+    items.filter(item =>
       item.name.includes(filter)
     )
   );
-  
+
   // For complex computations:
   const complex = $derived.by(() => {
     console.log('Computing...');
@@ -195,19 +195,19 @@ function ExpensiveList({ items, filter }) {
 
 function Parent() {
   const [count, setCount] = useState(0);
-  
+
   // useCallback caches function reference
   // Prevents unnecessary re-renders of children
   const increment = useCallback(() => {
     setCount(c => c + 1);
   }, []);
-  
+
   const addAmount = useCallback((amount) => {
     setCount(c => c + amount);
   }, []);
-  
+
   return (
-    <Child 
+    <Child
       onIncrement={increment}
       onAdd={addAmount}
     />
@@ -217,24 +217,24 @@ function Parent() {
 			`<` +
 			`script>
   let count = $state(0);
-  
+
   // In Svelte, functions are stable by default
   // No useCallback equivalent needed!
   function increment() {
     count++;
   }
-  
+
   function addAmount(amount) {
     count += amount;
   }
-  
+
   // Svelte's fine-grained reactivity means
   // child components only update when their
   // specific props change
 </` +
 			`script>
 
-<Child 
+<Child
   onIncrement={increment}
   onAdd={addAmount}
 />`
@@ -277,7 +277,7 @@ function Greeting({ name, age, isActive = false }: GreetingProps) {
     age: number;
     isActive?: boolean;
   }
-  
+
   // Destructure with defaults
   let { name, age, isActive = false }: Props = $props();
 </` +
@@ -378,10 +378,10 @@ export const componentExamples = {
       ) : (
         <p>Please log in</p>
       )}
-      
+
       {/* && for conditional render */}
       {isAdmin && <AdminPanel />}
-      
+
       {/* Multiple conditions */}
       {isLoggedIn && isAdmin && (
         <SuperAdminPanel />
@@ -403,12 +403,12 @@ export const componentExamples = {
   {:else}
     <p>Please log in</p>
   {/if}
-  
+
   <!-- Simple conditional -->
   {#if isAdmin}
     <AdminPanel />
   {/if}
-  
+
   <!-- else-if chains -->
   {#if isLoggedIn && isAdmin}
     <SuperAdminPanel />
@@ -474,17 +474,17 @@ function List({ items }) {
 	eventHandling: {
 		react: `function Form() {
   const [value, setValue] = useState('');
-  
+
   // Event handlers
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log('Submitted:', value);
   };
-  
+
   const handleClick = (e) => {
     console.log('Clicked at:', e.clientX);
   };
-  
+
   // Inline handlers
   return (
     <form onSubmit={handleSubmit}>
@@ -493,7 +493,7 @@ function List({ items }) {
         onChange={(e) => setValue(e.target.value)}
         onFocus={() => console.log('Focused')}
       />
-      <button 
+      <button
         type="submit"
         onClick={handleClick}
       >
@@ -506,12 +506,12 @@ function List({ items }) {
 			`<` +
 			`script>
   let value = $state('');
-  
+
   function handleSubmit(e) {
     e.preventDefault();
     console.log('Submitted:', value);
   }
-  
+
   function handleClick(e) {
     console.log('Clicked at:', e.clientX);
   }
@@ -524,7 +524,7 @@ function List({ items }) {
     bind:value
     onfocus={() => console.log('Focused')}
   />
-  <button 
+  <button
     type="submit"
     onclick={handleClick}
   >
@@ -550,7 +550,7 @@ function Users() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  
+
   useEffect(() => {
     fetch('/api/users')
       .then(res => res.json())
@@ -563,10 +563,10 @@ function Users() {
         setLoading(false);
       });
   }, []);
-  
+
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
-  
+
   return (
     <ul>
       {users.map(user => (
@@ -580,7 +580,7 @@ function Users() {
 export async function load({ fetch }) {
   const res = await fetch('/api/users');
   const users = await res.json();
-  
+
   // Returned data is available in page
   return { users };
 }
@@ -607,14 +607,14 @@ export async function load({ fetch }) {
 function Users() {
   const { data, isLoading, error } = useQuery({
     queryKey: ['users'],
-    queryFn: () => 
+    queryFn: () =>
       fetch('/api/users').then(r => r.json()),
     staleTime: 5 * 60 * 1000 // 5 minutes
   });
-  
+
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>Error!</p>;
-  
+
   return (
     <ul>
       {data.map(user => (
@@ -627,11 +627,11 @@ function Users() {
 			`<` +
 			`script>
   import { createQuery } from '@tanstack/svelte-query';
-  
+
   // Same API as React Query!
   const query = createQuery({
     queryKey: ['users'],
-    queryFn: () => 
+    queryFn: () =>
       fetch('/api/users').then(r => r.json()),
     staleTime: 5 * 60 * 1000
   });
@@ -665,7 +665,7 @@ function App() {
         <Link to="/about">About</Link>
         <Link to="/users">Users</Link>
       </nav>
-      
+
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
@@ -698,8 +698,8 @@ function App() {
 </` +
 			`script>
 
-<a 
-  href="/about" 
+<a
+  href="/about"
   class:active={page.url.pathname === '/about'}
 >
   About
@@ -711,9 +711,9 @@ import { useParams } from 'react-router-dom';
 
 function UserDetail() {
   const { id } = useParams();
-  
+
   // Fetch user data with id...
-  
+
   return <h1>User {id}</h1>;
 }
 
@@ -749,38 +749,38 @@ export async function load({ params }) {
 
 function LoginForm() {
   const navigate = useNavigate();
-  
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     await login();
-    
+
     // Programmatic navigation
     navigate('/dashboard');
-    
+
     // With replace (no back history)
     navigate('/dashboard', { replace: true });
-    
+
     // Go back
     navigate(-1);
   };
-  
+
   return <form onSubmit={handleSubmit}>...</form>;
 }`,
 		svelte:
 			`<` +
 			`script>
   import { goto } from '$app/navigation';
-  
+
   async function handleSubmit(e) {
     e.preventDefault();
     await login();
-    
+
     // Programmatic navigation
     goto('/dashboard');
-    
+
     // With options
     goto('/dashboard', { replaceState: true });
-    
+
     // Go back
     history.back();
   }
@@ -804,12 +804,12 @@ export const stateExamples = {
 function Counter() {
   // State declaration with initial value
   const [count, setCount] = useState(0);
-  
+
   // Must use setter function to update
   const increment = () => setCount(c => c + 1);
   const decrement = () => setCount(c => c - 1);
   const reset = () => setCount(0);
-  
+
   return (
     <div>
       <p>Count: {count}</p>
@@ -824,7 +824,7 @@ function Counter() {
 			`script>
   // State declaration with $state rune
   let count = $state(0);
-  
+
   // Direct mutations work!
   const increment = () => count++;
   const decrement = () => count--;
@@ -847,19 +847,19 @@ function PersonForm() {
     name: 'John',
     age: 30
   });
-  
+
   // Must spread to create new object reference
   const updateName = (name) => {
     setPerson(prev => ({ ...prev, name }));
   };
-  
+
   const birthday = () => {
     setPerson(prev => ({
       ...prev,
       age: prev.age + 1
     }));
   };
-  
+
   return (
     <div>
       <input
@@ -879,7 +879,7 @@ function PersonForm() {
     name: 'John',
     age: 30
   });
-  
+
   // Direct property mutation works!
   // Svelte tracks nested property changes
   function birthday() {
@@ -904,7 +904,7 @@ function TodoList() {
     { id: 2, text: 'Learn Svelte', done: false }
   ]);
   const [newTodo, setNewTodo] = useState('');
-  
+
   const addTodo = () => {
     if (newTodo.trim()) {
       // Must create new array
@@ -916,7 +916,7 @@ function TodoList() {
       setNewTodo('');
     }
   };
-  
+
   const toggleTodo = (id) => {
     // Map to create new array with updated item
     setTodos(todos.map(todo =>
@@ -925,11 +925,11 @@ function TodoList() {
         : todo
     ));
   };
-  
+
   const removeTodo = (id) => {
     setTodos(todos.filter(t => t.id !== id));
   };
-  
+
   return (/* JSX here */);
 }`,
 		svelte:
@@ -940,7 +940,7 @@ function TodoList() {
     { id: 2, text: 'Learn Svelte', done: false }
   ]);
   let newTodo = $state('');
-  
+
   function addTodo() {
     if (newTodo.trim()) {
       // Array methods work directly!
@@ -952,13 +952,13 @@ function TodoList() {
       newTodo = '';
     }
   }
-  
+
   function toggleTodo(id) {
     // Direct property mutation
     const todo = todos.find(t => t.id === id);
     if (todo) todo.done = !todo.done;
   }
-  
+
   function removeTodo(id) {
     const idx = todos.findIndex(t => t.id === id);
     if (idx !== -1) todos.splice(idx, 1);
@@ -987,12 +987,12 @@ updateState(draft => {
   let largeData = $state.raw({
     // thousands of items...
   });
-  
+
   // To update, must reassign the whole thing
   function updateData(newData) {
     largeData = newData;
   }
-  
+
   // Useful when you only care about
   // reference changes, not mutations
 </` +
@@ -1201,8 +1201,7 @@ function Greeting({ name }) {
 export function Demo({ who }) {
   return <Greeting name={who} />;
 }`,
-		svelte:
-			`{#snippet Greeting(name)}
+		svelte: `{#snippet Greeting(name)}
   <p>Hello, {name}!</p>
 {/snippet}
 
@@ -1212,30 +1211,53 @@ export function Demo({ who }) {
 
 export const storesExamples = {
 	globalState: {
-		react: `// React: Context is a common default for shared state
-const CounterContext = createContext(null);
+		react: `// React: Zustand is a popular global store
+import { create } from 'zustand';
 
-function CounterProvider({ children }) {
-  const [count, setCount] = useState(0);
+type CounterStore = {
+  count: number;
+  increment: () => void;
+  decrement: () => void;
+  reset: () => void;
+};
+
+export const useCounterStore = create<CounterStore>((set) => ({
+  count: 0,
+  increment: () => set((s) => ({ count: s.count + 1 })),
+  decrement: () => set((s) => ({ count: s.count - 1 })),
+  reset: () => set({ count: 0 })
+}));
+
+function Counter() {
+  const { count, increment, decrement, reset } = useCounterStore();
   return (
-    <CounterContext.Provider value={{ count, setCount }}>
-      {children}
-    </CounterContext.Provider>
+    <>
+      <p>{count}</p>
+      <button onClick={decrement}>-</button>
+      <button onClick={increment}>+</button>
+      <button onClick={reset}>Reset</button>
+    </>
   );
-}
-
-function useCounter() {
-  return useContext(CounterContext);
 }`,
 		svelte:
-			`// src/lib/stores/global-counter.svelte.ts
-export const globalCounter = $state({ count: 0 });
+			`// Svelte: writable store (built-in)
+// src/lib/stores/writable-counter.ts
+import { writable } from 'svelte/store';
+
+export const writableCounter = writable({ count: 0 });
 
 export function increment() {
-  globalCounter.count += 1;
+  writableCounter.update((s) => ({ ...s, count: s.count + 1 }));
 }
 
-// Anywhere in your app:
-// import { globalCounter, increment } from '$lib/stores/global-counter.svelte';`
+// In a component:
+<` +
+			`script>
+  import { writableCounter, increment } from '$lib/stores/writable-counter';
+</` +
+			`script>
+
+<p>{ $writableCounter.count }</p>
+<button onclick={increment}>+</button>`
 	}
 };
